@@ -1,21 +1,23 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-import { PageLayout } from "@/components";
-import { DataLayerProvider, WagmiRainbowKitClient } from "@/shared/providers";
+import { Account, PageLayout } from "@/components";
+import { ConnectWallet } from "@/components/connect-wallet/connect-wallet";
+import { DataLayerProvider, RainbowKitClientProvider, WagmiClientProvider } from "@/shared/providers";
 
 
 export default function Home() {
   return (
-    <WagmiRainbowKitClient>
+    <WagmiClientProvider>
       <DataLayerProvider>
-        <PageLayout>
-          <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-            Eth Wrap Unwrap
-          </div>
+        <RainbowKitClientProvider>
+          <PageLayout>
+            <div className="flex flex-col items-center justify-between font-mono text-sm lg:flex">
+              <div>Eth Wrap Unwrap</div>
+              <ConnectWallet />
+            </div>
           </PageLayout>
+        </RainbowKitClientProvider>
       </DataLayerProvider>
-    </WagmiRainbowKitClient>
+    </WagmiClientProvider>
   );
 }
