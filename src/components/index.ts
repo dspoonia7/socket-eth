@@ -1,2 +1,2 @@
 export * from './layouts';
-export * from './account';
+export * from './wallet';
