@@ -7,7 +7,7 @@ interface PageLayoutProps {
 
 export const PageLayout = ({ className, children }: PropsWithChildren<PageLayoutProps>) => {
   return (
-    <main className={clsx('min-h-screen flex flex-col items-center justify-between p-24', className)}>
+    <main className={clsx('min-h-screen flex flex-col items-center justify-between p-24 font-mono', className)}>
       {children}
     </main>
   );

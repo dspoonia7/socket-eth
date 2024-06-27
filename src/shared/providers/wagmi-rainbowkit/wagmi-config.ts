@@ -1,26 +1,23 @@
 'use client';
 
 import { http, createStorage, cookieStorage } from 'wagmi';
-import { sepolia, bscTestnet, blastSepolia } from 'wagmi/chains';
+import { sepolia, blastSepolia } from 'wagmi/chains';
 import { Chain, getDefaultConfig } from '@rainbow-me/rainbowkit';
 
-const projectId = '211472b7f0addd5049b5545c48b546f9';
+const projectId = process.env.ETH_PROJECT_ID || '';
 const supportedChains: Chain[] = [
-  // mainnet,
   sepolia,
   blastSepolia
 ];
 
 // const wagmiConfig = createConfig({
-//   chains: [mainnet, base, sepolia],
+//   chains: [sepolia],
 //   connectors: [
 //     injected(),
 //     walletConnect({ projectId }),
 //     metaMask(),
-//     safe(),
 //   ],
 //   transports: {
-//     [mainnet.id]: http(),
 //     [sepolia.id]: http(),
 //   },
 // })

@@ -26,7 +26,7 @@ export const ConnectWallet = () => {
   if (!isConnected) {
     return (
       <button
-        className="socket-btn"
+        className="socket-btn socket-btn-lg"
         onClick={async () => {
           // Disconnect wallet first to handle the use case when is connected but the user is not connected
           if (isConnected) {
@@ -43,7 +43,7 @@ export const ConnectWallet = () => {
 
   if (isConnected && !chain) {
     return (
-      <button className="socket-btn" onClick={openChainModal}>
+      <button className="socket-btn socket-btn-lg" onClick={openChainModal}>
         Wrong network
       </button>
     );
@@ -65,10 +65,10 @@ export const ConnectWallet = () => {
         <div>Account</div>
       </div>
       <div className="flex items-center gap-2">
-        <button className="socket-btn" onClick={openChainModal}>
+        <button className="socket-btn socket-btn-lg" onClick={openChainModal}>
           Switch Networks
         </button>
-        <button className="socket-btn" onClick={() => disconnect()}>
+        <button className="socket-btn socket-btn-lg" onClick={() => disconnect()}>
           Disconnect
         </button>
       </div>
