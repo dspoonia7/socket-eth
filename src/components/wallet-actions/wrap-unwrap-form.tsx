@@ -37,6 +37,8 @@ export const WrapUnwrapForm = ({ action }: WrapUnwrapFormProps) => {
     withdrawTransactionReceipt,
   } = useWithdraw(transactionAmount);
 
+  console.log('debug-WrapUnwrapForm', depositResponse, depositTransactionReceipt);
+
   useEffect(() => {
     if (depositResponse.data) {
       onClickReset();
