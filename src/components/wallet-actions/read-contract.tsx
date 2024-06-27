@@ -13,8 +13,6 @@ export const ReadContract = () => {
     args: [accAddress],
   });
 
-  // console.log('useReadContract.1', balance, isLoading, isPending, error);
-
   const result = useReadContracts({ 
     allowFailure: false, 
     contracts: [ 
@@ -42,7 +40,7 @@ export const ReadContract = () => {
   if (error)
     return (
       <div>
-        Error: {(error as BaseError).shortMessage || error.message}
+        Error: {error?.shortMessage || error?.message}
       </div>
     )
 

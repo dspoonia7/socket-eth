@@ -10,7 +10,7 @@ import { type UseSimulateContractParameters } from 'wagmi';
 
 import { accountAddress, sepContractAddress, wagmiContractAbiConfig } from '../config';
 
-export const useDeposit = (transactionAmount: number) => {
+export const useWithdraw = (transactionAmount: number) => {
   const { address, chain } = useAccount();
   const accAddress = address ?? accountAddress;
 
@@ -19,19 +19,19 @@ export const useDeposit = (transactionAmount: number) => {
   const simulateContract = useSimulateContract({
     abi: wagmiContractAbiConfig,
     address: sepContractAddress,
-    functionName: 'deposit',
+    functionName: 'withdraw',
     account: accAddress,
     query: { enabled: Boolean(debouncedValue) },
-    value: BigInt(parseEther(debouncedValue?.toString() || '0')),
+    args: [BigInt(parseEther(debouncedValue?.toString() || '0'))],
   } as UseSimulateContractParameters);
 
-  const { writeContract: writeDeposit, ...depositResponse } = useWriteContract();
-  const depositTransactionReceipt = useWaitForTransactionReceipt({ hash: depositResponse?.data });
+  const { writeContract: writeWithdraw, ...withdrawResponse } = useWriteContract();
+  const withdrawTransactionReceipt = useWaitForTransactionReceipt({ hash: withdrawResponse?.data });
 
   return {
     simulateContract,
-    writeDeposit,
-    depositResponse,
-    depositTransactionReceipt,
+    writeWithdraw,
+    withdrawResponse,
+    withdrawTransactionReceipt,
   };
 };

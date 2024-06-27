@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
-import { type BaseError, type UseWriteContractParameters, useAccount } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
+import { type UseWriteContractParameters, useAccount } from "wagmi";
 import { parseEther } from "viem";
 
 import { useDeposit, useTransactionFee } from "@/shared/hooks";
 import { useBalances } from "@/shared/hooks/use-balances";
 import { accountAddress, sepContractAddress, wagmiContractAbiConfig } from "@/shared/config";
 import clsx from "clsx";
+import { useWithdraw } from "@/shared/hooks/use-withdraw";
+import { TransactionResult } from "./transaction-result";
+import { WALLET_ACTIONS } from "@/shared/constants";
 
-export enum WALLET_ACTIONS {
-  WRAP = 'deposit',
-  UNWRAP = 'withdraw',
-}
-
+const MIN_AMOUNT = 0.000001;
 interface WrapUnwrapFormProps {
   action: WALLET_ACTIONS;
 }
@@ -22,15 +21,21 @@ export const WrapUnwrapForm = ({ action }: WrapUnwrapFormProps) => {
   const { txFeeEther } = useTransactionFee();
 
   const [inputAmount, setInputAmount] = useState<number>();
-  const transactionAmount: number = inputAmount || 0;
+  const transactionAmount: number = useMemo(() => {
+    if (inputAmount && inputAmount < MIN_AMOUNT) return MIN_AMOUNT; // min amount
+    return inputAmount || 0
+  }, [inputAmount]);
 
   const {
     writeDeposit,
     depositResponse,
-    transactionReceipt,
+    depositTransactionReceipt,
   } = useDeposit(transactionAmount);
-
-  // console.log('debug-WrapUnwrapForm', depositResponse, transactionReceipt)
+  const {
+    writeWithdraw,
+    withdrawResponse,
+    withdrawTransactionReceipt,
+  } = useWithdraw(transactionAmount);
 
   useEffect(() => {
     if (depositResponse.data) {
@@ -60,19 +65,29 @@ export const WrapUnwrapForm = ({ action }: WrapUnwrapFormProps) => {
   const onClickSubmit = () => {
     if (!transactionAmount) return;
 
-    writeDeposit({
-      abi: wagmiContractAbiConfig,
-      address: sepContractAddress,
-      functionName: 'deposit',
-      account: address ?? accountAddress,
-      value: BigInt(parseEther(transactionAmount?.toString() || '0')),
-    });
+    if (action === WALLET_ACTIONS.WRAP) {
+      writeDeposit({
+        abi: wagmiContractAbiConfig,
+        address: sepContractAddress,
+        functionName: 'deposit',
+        account: address ?? accountAddress,
+        value: BigInt(parseEther(transactionAmount?.toString() || '0')),
+      });
+    } else if (action === WALLET_ACTIONS.UNWRAP) {
+      writeWithdraw({
+        abi: wagmiContractAbiConfig,
+        address: sepContractAddress,
+        functionName: 'withdraw',
+        account: address ?? accountAddress,
+        args: [BigInt(parseEther(transactionAmount?.toString() || '0'))],
+      })
+    }
   };
 
-  const isWrap = action === WALLET_ACTIONS.WRAP;
+  const isDeposit = action === WALLET_ACTIONS.WRAP;
   const symbol = chain?.nativeCurrency?.symbol ?? 'ETH';
 
-  const transactionProcessing = depositResponse?.isPending || transactionReceipt?.isLoading;
+  const transactionProcessing = depositResponse?.isPending || depositTransactionReceipt?.isLoading;
   const disabledState = transactionProcessing || !transactionAmount;
   return (
     <div className="flex flex-col w-full gap-3">
@@ -82,8 +97,8 @@ export const WrapUnwrapForm = ({ action }: WrapUnwrapFormProps) => {
           <button type="button" className="socket-btn socket-btn-md" onClick={onClickReset}>Reset</button>
         </div>
         <div className="flex items-center gap-2">
-          <div>{isWrap ? '' : 'W'}{symbol} Balance:</div>
-          <div>{isWrap ? ethBalance?.slice(0, 6) || 0 : wethBalance?.slice(0, 6) || 0}</div>
+          <div>{isDeposit ? '' : 'W'}{symbol} Balance:</div>
+          <div>{isDeposit ? ethBalance?.slice(0, 6) || 0 : wethBalance?.slice(0, 6) || 0}</div>
         </div>
       </div>
       <div className="flex items-center gap-3 w-full">
@@ -104,39 +119,19 @@ export const WrapUnwrapForm = ({ action }: WrapUnwrapFormProps) => {
         </button>
       </div>
 
-      <div className="flex flex-col mt-9 mb-12">
-        {transactionReceipt?.isSuccess ? (
-          <div className="flex flex-col gap-4">
-            <div className="font-bold text-sm text-green-800">Transaction successful!</div>
-            <div className="flex flex-col items-start gap-1">
-              <div className="text-sm">Transaction hash:</div>
-              <a
-                className="italic text-blue-700 text-xs"
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://sepolia.etherscan.io/tx/${transactionReceipt?.data?.transactionHash || depositResponse?.data}`}
-              >
-                {transactionReceipt?.data?.transactionHash}
-              </a>
-            </div>
-          </div>
-        ) : (depositResponse?.isPending) ? (
-          <div className="flex items-start">
-            <div>Processing transaction...</div>
-          </div>
-        ) : (transactionReceipt?.isLoading) ? (
-          <div className="flex items-start">
-            <div>Fetching transaction receipt...</div>
-          </div>
-        ) : depositResponse?.isError && (
-          <div className="flex flex-col items-start gap-2">
-            <div className="text-sm">Transaction failed!</div>
-            <div className="text-xs text-red-700 italic bg-red-100">
-              {(depositResponse?.error as BaseError)?.details}
-            </div>
-          </div>
-        )}
-      </div>
+      {isDeposit ? (
+        <TransactionResult
+          action={action}
+          contractResponse={depositResponse}
+          transactionReceipt={depositTransactionReceipt}
+        />
+      ) : (
+        <TransactionResult
+          action={action}
+          contractResponse={withdrawResponse}
+          transactionReceipt={withdrawTransactionReceipt}
+        />
+      )}
     </div>
   )
 }

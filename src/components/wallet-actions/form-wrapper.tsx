@@ -2,8 +2,9 @@ import { useAccount } from "wagmi";
 import { useState } from "react";
 import clsx from "clsx";
 
-import { WALLET_ACTIONS, WrapUnwrapForm } from "./wrap-unwrap-form";
+import { WrapUnwrapForm } from "./wrap-unwrap-form";
 import { useBalances } from "@/shared/hooks/use-balances";
+import { WALLET_ACTIONS } from "@/shared/constants";
 
 export const FormWrapper = () => {
   const { address, isConnected, chain } = useAccount();

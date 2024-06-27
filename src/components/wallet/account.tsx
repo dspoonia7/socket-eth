@@ -43,7 +43,7 @@ const AccountTile = ({ title, titleClassName, value, valueClassName }: { title: 
   return (
     <div className="group rounded-lg border border-transparent px-4 py-2 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
       <h3 className={clsx('mb-2 text-base font-semibold', titleClassName)}>{title}</h3>
-      <div className={clsx('m-0 max-w-[30ch] text-sm opacity-50 text-balance', valueClassName)}>
+      <div className={clsx('m-0 max-w-[30ch] text-sm opacity-70 text-balance', valueClassName)}>
         {value}
       </div>
     </div>
