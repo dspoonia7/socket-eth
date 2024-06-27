@@ -8,54 +8,16 @@ import {
 import { parseEther } from 'viem';
 import { type UseSimulateContractParameters } from 'wagmi';
 
-import { networkAddressMap, sepContractAddress, wrapEthAbi, wagmiContractAbiConfig } from '../config';
-import { wagmiConfig } from '../providers';
+import { accountAddress, networkAddressMap, sepContractAddress, wagmiContractAbiConfig } from '../config';
 
-export const abiConfig = [
-  {
-    type: 'function',
-    name: 'approve',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'spender', type: 'address' },
-      { name: 'amount', type: 'uint256' },
-    ],
-    outputs: [{ type: 'bool' }],
-  },
-  {
-    type: 'function',
-    name: 'transferFrom',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'sender', type: 'address' },
-      { name: 'recipient', type: 'address' },
-      { name: 'amount', type: 'uint256' },
-    ],
-    outputs: [{ type: 'bool' }],
-  },
-  {
-    constant: false,
-    inputs: [
-      // { name: 'sender', type: 'address' },
-      // { name: 'recipient', type: 'address' },
-      // { name: 'amount', type: 'uint256' },
-    ],
-    name: "deposit",
-    outputs: [],
-    payable: true,
-    stateMutability: "payable",
-    type: "function"
-  }
-] as const
-
-export const useDeposit = (inputBalance) => {
+export const useDeposit = (transactionAmount: number) => {
   const { address, chain } = useAccount();
-  const accAddress = address ?? '0xe35e05313CB010E174Dd6C85b9F274180a25524b'
+  const accAddress = address ?? accountAddress;
 
-  const debouncedValue = useDebounce(inputBalance, 500);
+  const debouncedValue = useDebounce(transactionAmount, 1000);
 
   const simulateContract = useSimulateContract({
-    abi: abiConfig,
+    abi: wagmiContractAbiConfig,
     address: sepContractAddress,
     functionName: 'deposit',
     account: accAddress,

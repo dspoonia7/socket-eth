@@ -9,12 +9,12 @@ export const FormWrapper = () => {
   const { address, isConnected, chain } = useAccount();
   const [action, setAction] = useState(WALLET_ACTIONS.WRAP);
 
-  if (!isConnected ||!chain) return null;
+  const isUserConnected = isConnected && chain;
 
   const isWrap = action === WALLET_ACTIONS.WRAP;
   const symbol = chain?.nativeCurrency?.symbol || 'ETH';
   return (
-    <section className="relative flex flex-col gap-9 w-[40rem] mt-12">
+    <section className="relative flex flex-col gap-9 w-[40rem] mt-6 p-6 border border-gray-500 shadow rounded-lg">
       <div className="w-full relative z-10 flex items-center gap-1 rounded-lg border border-stroke bg-white p-1 dark:border-dark-stroke dark:bg-white/[.02]">
         <span className={clsx("absolute top-1 -z-10 h-8 w-[50%] rounded-md bg-dark duration-200 dark:bg-white", isWrap ? 'left-1' : 'left-[20rem]')}></span>
         <button
@@ -37,7 +37,13 @@ export const FormWrapper = () => {
         </button>
       </div>
 
-      <WrapUnwrapForm action={action} />
+      {isUserConnected ? (
+        <WrapUnwrapForm action={action} />
+      ) : (
+        <div className="font-bold p-4 text-center">
+          Connect to {isWrap ? 'wrap' : 'unwrap'} {symbol}
+        </div>
+      )}
     </section>
   );
 }

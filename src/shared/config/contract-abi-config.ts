@@ -1,69 +1,10 @@
 import { networkAddressMap } from "./network-address";
 
-export const contractAbiConfig = [
-  {
-    type: 'function',
-    name: 'balanceOf',
-    stateMutability: 'view',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ type: 'uint256' }],
-  },
-  {
-    type: 'function',
-    name: 'totalSupply',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ name: 'supply', type: 'uint256' }],
-  },
-] as const;
-
+export const accountAddress = process.env.ETH_WALLET_ADDRESS as `0x${string}`;
 export const sepContractAddress = networkAddressMap.sepolia;
+
 export const wagmiContractAbiConfig = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'approved',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-    ],
-    name: 'Approval',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'approved',
-        type: 'bool',
-      },
-    ],
-    name: 'ApprovalForAll',
-    type: 'event',
-  },
   {
     anonymous: false,
     inputs: [
@@ -100,23 +41,6 @@ export const wagmiContractAbiConfig = [
     type: 'function',
   },
   {
-    inputs: [{ name: 'tokenId', type: 'uint256' }],
-    name: 'getApproved',
-    outputs: [{ name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { name: 'owner', type: 'address' },
-      { name: 'operator', type: 'address' },
-    ],
-    name: 'isApprovedForAll',
-    outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'mint',
     outputs: [],
@@ -128,13 +52,6 @@ export const wagmiContractAbiConfig = [
     name: 'mint',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'name',
-    outputs: [{ name: '', type: 'string' }],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -168,34 +85,10 @@ export const wagmiContractAbiConfig = [
     type: 'function',
   },
   {
-    inputs: [
-      { name: 'operator', type: 'address' },
-      { name: 'approved', type: 'bool' },
-    ],
-    name: 'setApprovalForAll',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [{ name: 'interfaceId', type: 'bytes4' }],
-    name: 'supportsInterface',
-    outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', type: 'string' }],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ name: 'tokenId', type: 'uint256' }],
-    name: 'tokenURI',
-    outputs: [{ name: '', type: 'string' }],
-    stateMutability: 'pure',
     type: 'function',
   },
   {
@@ -207,13 +100,22 @@ export const wagmiContractAbiConfig = [
   },
   {
     inputs: [
-      { name: 'from', type: 'address' },
-      { name: 'to', type: 'address' },
-      { name: 'tokenId', type: 'uint256' },
+      { name: 'sender', type: 'address' },
+      { name: 'recipient', type: 'address' },
+      { name: 'amount', type: 'uint256' },
     ],
     name: 'transferFrom',
-    outputs: [],
+    outputs: [{ type: 'bool' }],
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    constant: false,
+    inputs: [],
+    name: "deposit",
+    outputs: [],
+    payable: true,
+    stateMutability: "payable",
+    type: "function"
+  }
 ] as const

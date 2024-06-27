@@ -1,11 +1,10 @@
 import { type BaseError, useReadContract, useAccount, useReadContracts } from 'wagmi'
-import { contractAbiConfig, wagmiContractAbiConfig, sepContractAddress } from "@/shared/config";
-import { getAccount } from 'wagmi/actions';
+import { wagmiContractAbiConfig, sepContractAddress, accountAddress } from "@/shared/config";
 import { erc20Abi } from 'viem';
 
 export const ReadContract = () => {
   const { address } = useAccount();
-  const accAddress = address ?? '0xe35e05313CB010E174Dd6C85b9F274180a25524b'
+  const accAddress = address ?? accountAddress;
 
   const { data: balance, error, isLoading, isSuccess, isPending } = useReadContract({
     address: sepContractAddress,
@@ -14,7 +13,7 @@ export const ReadContract = () => {
     args: [accAddress],
   });
 
-  // console.log('debug-ReadContract00', balance, isLoading, isPending, error);
+  // console.log('useReadContract.1', balance, isLoading, isPending, error);
 
   const result = useReadContracts({ 
     allowFailure: false, 
@@ -37,7 +36,6 @@ export const ReadContract = () => {
       }, 
     ] 
   })
-  // console.log('debug-ReadContract-11', result.data);
 
   if (isPending) return <div>Loading...</div>
 

@@ -25,19 +25,21 @@ export const ConnectWallet = () => {
 
   if (!isConnected) {
     return (
-      <button
-        className="socket-btn socket-btn-lg"
-        onClick={async () => {
-          // Disconnect wallet first to handle the use case when is connected but the user is not connected
-          if (isConnected) {
-            disconnect();
-          }
-          openConnectModal?.();
-        }}
-        disabled={isConnecting}
-      >
-        { isConnecting ? 'Loading...' : 'Connect your wallet' }
-      </button>
+      <div className="flex items-center w-full justify-start">
+        <button
+          className="socket-btn socket-btn-lg"
+          onClick={async () => {
+            // Disconnect wallet first to handle the use case when is connected but the user is not connected
+            if (isConnected) {
+              disconnect();
+            }
+            openConnectModal?.();
+          }}
+          disabled={isConnecting}
+        >
+          { isConnecting ? 'Loading...' : 'Connect your wallet' }
+        </button>
+      </div>
     );
   }
 

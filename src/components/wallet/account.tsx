@@ -1,16 +1,16 @@
-import { useAccount, useBalance, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi'
+import { useAccount, useBalance, useDisconnect, useEnsName } from 'wagmi'
 import { formatUnits } from "viem";
 import clsx from 'clsx';
 
 export function Account() {
-  const { address, chain } = useAccount();
+  const { address, chain, isConnected } = useAccount();
   const { data: balance } = useBalance({ address });
   const { data: ensName } = useEnsName({ address })
 
-  // console.log('debug-Account', address, chain)
+  if (!isConnected || !chain) return null;
 
   return (
-    <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left mt-3">
+    <div className="grid max-w-5xl w-full mb-0 grid-cols-4 text-left mt-3">
       <AccountTile 
         title="Wallet address"
         value={middleEllipsis(address as string, 9) || ""}
@@ -41,8 +41,8 @@ export function Account() {
 
 const AccountTile = ({ title, titleClassName, value, valueClassName }: { title: React.ReactNode, titleClassName?: string, value: React.ReactNode, valueClassName?: string }) => {
   return (
-    <div className="group rounded-lg border border-transparent px-6 py-2 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-      <h2 className={clsx('mb-3 text-lg font-semibold', titleClassName)}>{title}</h2>
+    <div className="group rounded-lg border border-transparent px-4 py-2 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
+      <h3 className={clsx('mb-2 text-base font-semibold', titleClassName)}>{title}</h3>
       <div className={clsx('m-0 max-w-[30ch] text-sm opacity-50 text-balance', valueClassName)}>
         {value}
       </div>
